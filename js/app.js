@@ -249,6 +249,25 @@ function openCheckout() {
   blip(700);
 }
 
+/* ---------- Sincronização com a API (banco de dados) ---------- */
+const API_BASE = (localStorage.getItem("api-url") || window.API_URL || "").replace(/\/+$/, "");
+
+async function syncOrder(order) {
+  if (!API_BASE) return { ok: false, motivo: "API não configurada" };
+  try {
+    const resp = await fetch(`${API_BASE}/api/pedidos`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(order),
+    });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    return { ok: true };
+  } catch (err) {
+    console.warn("Pedido não sincronizado:", err.message);
+    return { ok: false, motivo: err.message };
+  }
+}
+
 function finishOrder() {
   const name = ($("#input-name").value || "").trim();
   const total = cartTotal();
@@ -256,6 +275,10 @@ function finishOrder() {
   const orderCode = "A-" + String(Math.floor(100 + Math.random() * 900));
   const now = new Date();
   const dateStr = now.toLocaleDateString("pt-BR") + " · " + now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+  const itens = [...state.cart].map(([id, qty]) => {
+    const p = PRODUCTS.find(p => p.id === id);
+    return { id, nome: p.name, qtd: qty, preco_unit: p.price, subtotal: +(p.price * qty).toFixed(2) };
+  });
 
   $("#ticket-number").textContent = `PEDIDO #${orderCode}`;
   $("#ticket-items").innerHTML = [...state.cart].map(([id, qty]) => {
@@ -277,6 +300,18 @@ function finishOrder() {
   vibrate([60, 60, 120]);
   blip(880); setTimeout(() => blip(1180), 160);
   showToast(`✅ Pedido #${orderCode} confirmado!`);
+
+  /* Envia o pedido para a API/banco (sem bloquear o bilhete) */
+  const syncEl = $("#ticket-sync");
+  syncEl.textContent = "⏳ Registrando no sistema...";
+  syncEl.className = "ticket-sync sync-loading";
+  const order = { codigo: orderCode, nome, modo: state.mode, pagamento: state.pay, total, itens };
+  syncOrder(order).then(({ ok, motivo }) => {
+    syncEl.textContent = ok
+      ? "✅ Pedido registrado no banco de dados"
+      : `⚠️ Salvo só neste aparelho (${motivo})`;
+    syncEl.className = `ticket-sync ${ok ? "sync-ok" : "sync-fail"}`;
+  });
 }
 
 /* ---------- Toast / som / vibração ---------- */

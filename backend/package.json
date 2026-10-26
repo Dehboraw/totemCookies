@@ -1,0 +1,16 @@
+{
+  "name": "cookies-cia-api",
+  "version": "1.0.0",
+  "description": "API REST do totem Cookies & Cia. — registra pedidos em PostgreSQL",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.11.3"
+  }
+}

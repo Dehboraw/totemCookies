@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <title>Painel de Pedidos · Cookies &amp; Cia.</title>
+</head>
+<body class="admin-body">
+
+  <header class="topbar">
+    <div class="awning" aria-hidden="true"></div>
+    <div class="brand">
+      <div class="brand-text">
+        <h1>📋 Painel de Pedidos</h1>
+        <p class="brand-sub">Cookies &amp; Cia. · registros do banco de dados</p>
+      </div>
+      <span class="brand-mark" style="margin-left:auto">
+        <a href="index.html" style="color:var(--cream);text-decoration:none;font-size:.8rem;font-weight:700">← Totem</a>
+      </span>
+    </div>
+  </header>
+
+  <main class="admin-wrap">
+    <!-- Configuração da API -->
+    <section class="admin-config">
+      <label class="field">
+        <span>Endereço da API (URL do web service no Render)</span>
+        <input type="url" id="api-url" placeholder="https://cookies-cia-api.onrender.com" autocomplete="off">
+      </label>
+      <div class="admin-config-row">
+        <button class="btn btn-primary" id="btn-save-api">💾 Salvar</button>
+        <button class="btn" id="btn-test-api">🔌 Testar conexão</button>
+        <span id="conn-status" class="conn-status"></span>
+      </div>
+    </section>
+
+    <!-- Resumo -->
+    <section class="admin-stats">
+      <div class="stat"><strong id="stat-count">0</strong><span>pedidos</span></div>
+      <div class="stat"><strong id="stat-revenue">R$ 0,00</strong><span>faturamento</span></div>
+      <div class="stat"><strong id="stat-last">—</strong><span>último pedido</span></div>
+    </section>
+
+    <!-- Lista -->
+    <section class="admin-list-head">
+      <h2>Últimos pedidos</h2>
+      <button class="btn" id="btn-refresh">🔄 Atualizar</button>
+    </section>
+    <section id="orders" class="admin-list"></section>
+  </main>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

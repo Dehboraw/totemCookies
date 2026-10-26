@@ -766,3 +766,153 @@ button { font-family: inherit; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* ============================================================
+   Painel admin (admin.html)
+   ============================================================ */
+.admin-link {
+  display: block;
+  text-align: center;
+  margin-top: 14px;
+  color: var(--teal);
+  font-size: .8rem;
+  font-weight: 700;
+  text-decoration: underline;
+  letter-spacing: .5px;
+}
+
+.ticket-sync {
+  font-size: .72rem;
+  margin-top: 8px;
+  min-height: 1.1em;
+}
+.ticket-sync.sync-ok     { color: var(--teal);   font-weight: 700; }
+.ticket-sync.sync-fail   { color: var(--red);    font-weight: 700; }
+.ticket-sync.sync-loading{ color: #6b4a2c; }
+
+.admin-body { padding-bottom: 40px; }
+
+.admin-wrap {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 20px 16px;
+}
+
+.admin-config {
+  background: var(--paper);
+  border: 2px solid var(--brown);
+  border-radius: var(--radius-big);
+  box-shadow: 4px 4px 0 var(--shadow);
+  padding: 18px 16px;
+}
+.admin-config .field { margin-top: 0; }
+.admin-config-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.admin-config-row .btn { padding: 11px 16px; font-size: .85rem; }
+
+.conn-status { font-size: .78rem; font-weight: 700; }
+.conn-status.ok     { color: var(--teal); }
+.conn-status.fail   { color: var(--red); }
+.conn-status.loading{ color: #6b4a2c; }
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+.stat {
+  background: var(--paper);
+  border: 2px solid var(--brown);
+  border-radius: var(--radius);
+  box-shadow: 3px 3px 0 var(--shadow);
+  padding: 14px 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.stat strong { font-family: var(--font-display); font-size: 1.15rem; color: var(--brown); }
+.stat span { font-size: .68rem; letter-spacing: 1px; text-transform: uppercase; color: #6b4a2c; }
+
+.admin-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 24px 0 12px;
+}
+.admin-list-head h2 { font-family: var(--font-display); font-size: 1.1rem; color: var(--teal); }
+.admin-list-head .btn { padding: 9px 14px; font-size: .8rem; }
+
+.admin-list { display: flex; flex-direction: column; gap: 12px; }
+
+.order-card {
+  background: var(--paper);
+  border: 2px solid var(--brown);
+  border-radius: var(--radius);
+  box-shadow: 3px 3px 0 var(--shadow);
+  padding: 12px 14px;
+}
+.order-card header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px dashed var(--line);
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+.order-code { font-family: var(--font-display); color: var(--brown); font-size: .95rem; letter-spacing: 1px; }
+.order-status {
+  background: var(--teal);
+  color: var(--cream);
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+.order-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+  font-size: .8rem;
+}
+.order-grid small {
+  display: block;
+  font-size: .62rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #6b4a2c;
+}
+.order-card footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  border-top: 2px dashed var(--line);
+  padding-top: 8px;
+  margin-top: 8px;
+}
+.order-items { font-size: .74rem; color: #6b4a2c; line-height: 1.4; }
+.order-card footer strong { font-family: var(--font-display); color: var(--brown); }
+
+.admin-empty {
+  text-align: center;
+  color: #6b4a2c;
+  background: var(--paper);
+  border: 2px dashed var(--line);
+  border-radius: var(--radius);
+  padding: 24px 14px;
+  font-size: .85rem;
+}
+
+@media (max-width: 420px) {
+  .admin-stats { grid-template-columns: 1fr 1fr; }
+  .stat:first-child { grid-column: span 2; }
+}

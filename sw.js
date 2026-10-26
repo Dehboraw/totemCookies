@@ -1,10 +1,13 @@
 /* Service Worker — Cookies & Cia. Totem */
-const CACHE = "cookies-totem-v1";
+const CACHE = "cookies-totem-v2";
 const ASSETS = [
   "./",
   "./index.html",
+  "./admin.html",
   "./css/styles.css",
   "./js/app.js",
+  "./js/admin.js",
+  "./js/config.js",
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
