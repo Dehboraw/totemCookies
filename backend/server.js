@@ -46,6 +46,27 @@ async function initDb() {
 }
 
 /* ---------- Endpoints ---------- */
+app.get("/", (req, res) => {
+  res.type("html").send(`<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cookies &amp; Cia. · API</title><style>
+body{font-family:monospace;background:#f7ecd7;color:#2b1a0e;max-width:560px;margin:40px auto;padding:0 16px}
+h1{color:#5a3216}small{color:#b4472f;letter-spacing:2px;text-transform:uppercase}
+li{margin:8px 0}code{background:#fdf6e3;border:1px solid #d9c39a;padding:2px 6px;border-radius:4px}
+</style></head><body>
+<small>Cookies &amp; Cia. · desde 1985</small>
+<h1>⚙️ API de pedidos</h1>
+<p>Esta é a API do totem — não tem página aqui na raiz. Endpoints disponíveis:</p>
+<ul>
+<li><code>GET /api/health</code> — status da API e do banco</li>
+<li><code>POST /api/pedidos</code> — registra um pedido</li>
+<li><code>GET /api/pedidos</code> — lista os pedidos</li>
+<li><code>GET /api/pedidos/:codigo</code> — busca pelo código</li>
+</ul>
+<p>🍪 O site do totem fica em outro endereço (site estático).</p>
+</body></html>`);
+});
+
 app.get("/api/health", async (req, res) => {
   try {
     await pool.query("SELECT 1");
