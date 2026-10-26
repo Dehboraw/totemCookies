@@ -1,0 +1,23 @@
+# Render.com — Site Estático (PWA)
+# A criação do serviço pode ser feita automaticamente com este arquivo:
+# no painel do Render, escolha "Blueprint" e aponte para este repositório.
+
+services:
+  - type: web
+    name: cookies-cia-totem
+    runtime: static
+    buildCommand: echo "Site estático — sem build necessário"
+    staticPublishPath: .
+    headers:
+      # Garante que o service worker seja atualizado corretamente
+      - path: /sw.js
+        name: Cache-Control
+        value: no-cache
+      - path: /manifest.json
+        name: Content-Type
+        value: application/manifest+json
+    routes:
+      # Qualquer rota cai na SPA (boa para PWA standalone)
+      - type: rewrite
+        source: /*
+        destination: /index.html

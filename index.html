@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#5a3216">
+  <meta name="description" content="Totem de vendas de cookies artesanais — Cookies & Cia., desde 1985.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Cookies & Cia.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <title>Cookies &amp; Cia. · Totem de Vendas</title>
+</head>
+<body>
+
+  <!-- ============ CABEÇALHO RETRÔ ============ -->
+  <header class="topbar">
+    <div class="awning" aria-hidden="true"></div>
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 100 100" width="52" height="52" role="img" aria-label="Logo de um cookie">
+          <circle cx="50" cy="52" r="38" fill="#3d2314" opacity=".25"/>
+          <circle cx="50" cy="48" r="38" fill="#c9803e"/>
+          <circle cx="50" cy="48" r="38" fill="none" stroke="#a05f27" stroke-width="3"/>
+          <circle cx="36" cy="36" r="6" fill="#4a2c17"/>
+          <circle cx="62" cy="32" r="5" fill="#4a2c17"/>
+          <circle cx="68" cy="56" r="6" fill="#4a2c17"/>
+          <circle cx="40" cy="62" r="5" fill="#4a2c17"/>
+          <circle cx="52" cy="44" r="4" fill="#4a2c17"/>
+        </svg>
+      </span>
+      <div class="brand-text">
+        <h1>Cookies &amp; Cia.</h1>
+        <p class="brand-sub">★ Fornada Artesanal · desde 1985 ★</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ LETREIRO CORRENDO ============ -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>🔥 SAINDO DO FORNO AGORA &nbsp;•&nbsp; 🥛 LEITE GELADO GELADINHO &nbsp;•&nbsp; ⚡ PAGUE COM PIX &nbsp;•&nbsp; 🍪 COMBO 3 PAGUE 2 + 1 &nbsp;•&nbsp; 🏪 RETIRE NO BALCÃO &nbsp;•&nbsp;</span>
+      <span>🔥 SAINDO DO FORNO AGORA &nbsp;•&nbsp; 🥛 LEITE GELADO GELADINHO &nbsp;•&nbsp; ⚡ PAGUE COM PIX &nbsp;•&nbsp; 🍪 COMBO 3 PAGUE 2 + 1 &nbsp;•&nbsp; 🏪 RETIRE NO BALCÃO &nbsp;•&nbsp;</span>
+    </div>
+  </div>
+
+  <!-- ============ CARDÁPIO ============ -->
+  <main class="menu">
+    <div class="menu-head">
+      <h2>Cardápio do Dia</h2>
+      <p class="menu-note">— escolha seus sabores —</p>
+    </div>
+
+    <nav class="chips" id="chips" aria-label="Categorias">
+      <button class="chip is-active" data-cat="todos">Todos</button>
+      <button class="chip" data-cat="classicos">Clássicos</button>
+      <button class="chip" data-cat="especiais">Especiais</button>
+      <button class="chip" data-cat="brasil">Doces do Brasil</button>
+      <button class="chip" data-cat="bebidas">Bebidas</button>
+    </nav>
+
+    <section class="grid" id="grid" aria-live="polite"></section>
+
+    <p class="menu-footnote">✦ Massas preparadas na hora, com manteiga de verdade ✦</p>
+  </main>
+
+  <!-- ============ BARRA INFERIOR (SACOLA) ============ -->
+  <div class="bottombar" id="bottombar">
+    <div class="bar-total">
+      <span class="bar-items" id="bar-items">0 itens</span>
+      <strong class="bar-price" id="bar-price">R$ 0,00</strong>
+    </div>
+    <button class="btn btn-primary" id="btn-open-cart" aria-haspopup="dialog">
+      🛍️&nbsp; Ver Sacola
+    </button>
+  </div>
+
+  <!-- ============ SACOLA (BOTTOM SHEET) ============ -->
+  <div class="sheet-backdrop" id="cart-backdrop" hidden></div>
+  <section class="sheet" id="cart-sheet" role="dialog" aria-modal="true" aria-label="Sua sacola" hidden>
+    <div class="sheet-grip" aria-hidden="true"></div>
+    <header class="sheet-head">
+      <h2>🛍️ Sua Sacola</h2>
+      <button class="icon-btn" id="btn-close-cart" aria-label="Fechar sacola">✕</button>
+    </header>
+    <div class="sheet-body" id="cart-body"></div>
+    <footer class="sheet-foot">
+      <div class="foot-row">
+        <span>Subtotal</span>
+        <strong id="cart-subtotal">R$ 0,00</strong>
+      </div>
+      <button class="btn btn-primary btn-big" id="btn-checkout">Finalizar Pedido</button>
+    </footer>
+  </section>
+
+  <!-- ============ CHECKOUT ============ -->
+  <section class="screen" id="screen-checkout" hidden>
+    <header class="screen-head">
+      <button class="icon-btn" id="btn-back-checkout" aria-label="Voltar">←</button>
+      <h2>Checkout</h2>
+      <span class="head-space"></span>
+    </header>
+    <div class="screen-body">
+      <h3 class="opt-title">Como vai consumir?</h3>
+      <div class="opt-grid" id="opt-mode" role="radiogroup" aria-label="Modo de consumo">
+        <button class="opt is-active" data-value="retirada">🏪<span>Retirada<br><small>no balcão</small></span></button>
+        <button class="opt" data-value="salao">🪑<span>Consumir<br><small>no salão</small></span></button>
+      </div>
+
+      <h3 class="opt-title">Forma de pagamento</h3>
+      <div class="opt-grid opt-grid-3" id="opt-pay" role="radiogroup" aria-label="Forma de pagamento">
+        <button class="opt is-active" data-value="Dinheiro">💵<span>Dinheiro</span></button>
+        <button class="opt" data-value="Cartão">💳<span>Cartão</span></button>
+        <button class="opt" data-value="Pix">⚡<span>Pix</span></button>
+      </div>
+
+      <label class="field">
+        <span>Seu nome (no bilhete)</span>
+        <input type="text" id="input-name" placeholder="Ex.: Ana" maxlength="24" autocomplete="off">
+      </label>
+
+      <div class="summary" id="checkout-summary"></div>
+    </div>
+    <div class="screen-foot">
+      <button class="btn btn-primary btn-big" id="btn-confirm">Confirmar Pedido</button>
+    </div>
+  </section>
+
+  <!-- ============ BILHETE / CONFIRMAÇÃO ============ -->
+  <section class="screen" id="screen-receipt" hidden>
+    <div class="screen-body receipt-body">
+      <div class="stamp">PAGO ✓</div>
+      <div class="ticket">
+        <div class="ticket-perf" aria-hidden="true"></div>
+        <h2 class="ticket-brand">Cookies &amp; Cia.</h2>
+        <p class="ticket-sub">★ BILHETE DE PEDIDO ★</p>
+        <p class="ticket-number" id="ticket-number">PEDIDO #A-000</p>
+        <div class="ticket-items" id="ticket-items"></div>
+        <div class="ticket-total">
+          <span>TOTAL</span><strong id="ticket-total">R$ 0,00</strong>
+        </div>
+        <p class="ticket-info" id="ticket-info"></p>
+        <p class="ticket-note">Apresente este bilhete no balcão 🎫</p>
+        <div class="barcode" aria-hidden="true"></div>
+        <p class="ticket-thanks">Obrigado pela preferência!</p>
+      </div>
+      <button class="btn btn-primary btn-big" id="btn-new-order">🍽️ Fazer Novo Pedido</button>
+    </div>
+  </section>
+
+  <!-- ============ BANNER DE INSTALAÇÃO ============ -->
+  <button class="install-banner" id="install-banner" hidden>
+    📲 Instalar o Totem neste aparelho
+  </button>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
