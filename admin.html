@@ -9,16 +9,42 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
-  <title>Painel de Pedidos · Cookies &amp; Cia.</title>
+  <title>Administração · Cookies &amp; Cia.</title>
+  <style>
+    .admin-wrap{max-width:980px;margin:0 auto;padding:24px 16px 60px}
+    .admin-panel{background:var(--paper);border:2px solid var(--brown);border-radius:18px;padding:18px;margin:18px 0;box-shadow:4px 4px 0 var(--shadow)}
+    .admin-panel h2{font-family:var(--font-display);color:var(--teal);font-size:1.2rem;margin-bottom:14px}
+    .admin-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .admin-form .field{display:flex;flex-direction:column;gap:5px}
+    .admin-form .wide{grid-column:1/-1}
+    .admin-form input,.admin-form select,.admin-form textarea{width:100%;padding:11px;border:2px solid var(--line);border-radius:8px;background:#fffdf7;color:var(--ink);font:inherit}
+    .admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .admin-message{margin:10px 0;font-size:.9rem;min-height:1.2em}
+    .admin-products{display:grid;gap:10px}
+    .product-row{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:12px;padding:10px;border:1px solid var(--line);border-radius:12px}
+    .product-row img{width:64px;height:64px;object-fit:cover;border-radius:8px;background:var(--cream)}
+    .product-row small{display:block;color:#6b4a2c;margin-top:4px}
+    .product-actions{display:flex;gap:6px;flex-wrap:wrap}
+    .product-actions button,.status-select{font:inherit;padding:7px 9px;border:1px solid var(--brown);border-radius:8px;background:var(--paper);color:var(--brown)}
+    .admin-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+    .stat{background:var(--paper);border:2px solid var(--brown);border-radius:12px;padding:12px;text-align:center}
+    .stat strong{display:block;font-family:var(--font-display);font-size:1.2rem;color:var(--teal)}
+    .order-card{background:var(--paper);border:2px solid var(--brown);border-radius:14px;padding:14px;margin:10px 0;box-shadow:3px 3px 0 var(--shadow)}
+    .order-card header,.order-card footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .order-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+    .order-grid small{display:block;color:#6b4a2c}
+    .order-items{font-size:.85rem}
+    .admin-empty{padding:18px;text-align:center;color:#6b4a2c}
+    @media(max-width:560px){.admin-form{grid-template-columns:1fr}.product-row{grid-template-columns:52px 1fr}.product-row img{width:52px;height:52px}.product-actions{grid-column:1/-1}.admin-stats{grid-template-columns:1fr}.order-grid{grid-template-columns:1fr}}
+  </style>
 </head>
 <body class="admin-body">
-
   <header class="topbar">
     <div class="awning" aria-hidden="true"></div>
     <div class="brand">
       <div class="brand-text">
-        <h1>📋 Painel de Pedidos</h1>
-        <p class="brand-sub">Cookies &amp; Cia. · registros do banco de dados</p>
+        <h1>🍪 Administração</h1>
+        <p class="brand-sub">Cookies &amp; Cia. · painel de gestão</p>
       </div>
       <span class="brand-mark" style="margin-left:auto">
         <a href="index.html" style="color:var(--cream);text-decoration:none;font-size:.8rem;font-weight:700">← Totem</a>
@@ -27,34 +53,70 @@
   </header>
 
   <main class="admin-wrap">
-    <!-- Configuração da API -->
-    <section class="admin-config">
-      <label class="field">
-        <span>Endereço da API (URL do web service no Render)</span>
-        <input type="url" id="api-url" placeholder="https://cookies-cia-api.onrender.com" autocomplete="off">
-      </label>
-      <div class="admin-config-row">
-        <button class="btn btn-primary" id="btn-save-api">💾 Salvar</button>
-        <button class="btn" id="btn-test-api">🔌 Testar conexão</button>
-        <span id="conn-status" class="conn-status"></span>
+    <section id="login-panel" class="admin-panel">
+      <h2>Acesso administrativo</h2>
+      <form id="login-form" class="admin-form">
+        <label class="field wide"><span>E-mail</span><input id="login-email" type="email" autocomplete="username" required></label>
+        <label class="field wide"><span>Senha</span><input id="login-password" type="password" autocomplete="current-password" required></label>
+        <div class="admin-actions wide"><button class="btn btn-primary" type="submit">Entrar</button></div>
+      </form>
+      <p id="login-message" class="admin-message" role="status"></p>
+    </section>
+
+    <div id="admin-content" hidden>
+      <div class="admin-actions">
+        <span id="admin-identity" class="admin-message"></span>
+        <button id="logout-button" class="btn" type="button">Sair</button>
       </div>
-    </section>
 
-    <!-- Resumo -->
-    <section class="admin-stats">
-      <div class="stat"><strong id="stat-count">0</strong><span>pedidos</span></div>
-      <div class="stat"><strong id="stat-revenue">R$ 0,00</strong><span>faturamento</span></div>
-      <div class="stat"><strong id="stat-last">—</strong><span>último pedido</span></div>
-    </section>
+      <section class="admin-panel">
+        <h2 id="product-form-title">Cadastrar produto</h2>
+        <form id="product-form" class="admin-form">
+          <input id="product-id" type="hidden">
+          <label class="field"><span>Nome</span><input id="product-name" maxlength="80" required></label>
+          <label class="field"><span>Preço (R$)</span><input id="product-price" type="number" min="0.01" step="0.01" required></label>
+          <label class="field"><span>Categoria</span>
+            <select id="product-category" required>
+              <option value="classicos">Clássicos</option>
+              <option value="especiais">Especiais</option>
+              <option value="brasil">Doces do Brasil</option>
+              <option value="bebidas">Bebidas</option>
+            </select>
+          </label>
+          <label class="field"><span>Selo (opcional)</span><input id="product-badge" maxlength="24" placeholder="MAIS VENDIDO"></label>
+          <label class="field wide"><span>Descrição</span><textarea id="product-description" rows="2" maxlength="240" required></textarea></label>
+          <label class="field wide"><span>URL da imagem (opcional)</span><input id="product-image" type="url" placeholder="https://..."></label>
+          <label class="field"><span>Disponibilidade</span>
+            <select id="product-active"><option value="true">Ativo</option><option value="false">Inativo</option></select>
+          </label>
+          <div class="admin-actions wide">
+            <button id="product-submit" class="btn btn-primary" type="submit">Salvar produto</button>
+            <button id="product-cancel" class="btn" type="button" hidden>Cancelar edição</button>
+          </div>
+        </form>
+        <p id="product-message" class="admin-message" role="status"></p>
+      </section>
 
-    <!-- Lista -->
-    <section class="admin-list-head">
-      <h2>Últimos pedidos</h2>
-      <button class="btn" id="btn-refresh">🔄 Atualizar</button>
-    </section>
-    <section id="orders" class="admin-list"></section>
+      <section class="admin-panel">
+        <h2>Produtos cadastrados</h2>
+        <div id="products-list" class="admin-products"><p class="admin-empty">Carregando produtos...</p></div>
+      </section>
+
+      <section class="admin-stats">
+        <div class="stat"><strong id="stat-count">0</strong><span>pedidos</span></div>
+        <div class="stat"><strong id="stat-revenue">R$ 0,00</strong><span>faturamento listado</span></div>
+        <div class="stat"><strong id="stat-last">—</strong><span>último pedido</span></div>
+      </section>
+
+      <section class="admin-panel">
+        <div class="admin-actions" style="justify-content:space-between;align-items:center">
+          <h2 style="margin:0">Últimos pedidos</h2>
+          <button id="btn-refresh" class="btn" type="button">Atualizar</button>
+        </div>
+        <div id="orders" class="admin-list"><p class="admin-empty">Carregando pedidos...</p></div>
+      </section>
+    </div>
   </main>
-
-  <script src="js/admin.js"></script>
+  <script type="module" src="js/admin.js"></script>
 </body>
 </html>
