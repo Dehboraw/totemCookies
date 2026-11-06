@@ -3,8 +3,11 @@
    ============================================================ */
 "use strict";
 
+import { db } from "./firebase.js";
+import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
 /* ---------- Catálogo ---------- */
-const PRODUCTS = [
+let PRODUCTS = [
   { id: "classico",   name: "Cookie Clássico",        desc: "Gotas de chocolate meio amargo, borda crocante", price: 8.00,  cat: "classicos",  badge: "MAIS VENDIDO", art: { base: "#c9803e", chip: "#4a2c17", shape: "circle" } },
   { id: "duplo",      name: "Duplo Chocolate",        desc: "Massa de cacau + chunks derretidos por dentro",  price: 9.50,  cat: "classicos",  badge: null,           art: { base: "#6f4423", chip: "#2e1a0c", shape: "chunk" } },
   { id: "aveia",      name: "Aveia & Mel",            desc: "Flocos de aveia e mel puro da fazenda",          price: 7.50,  cat: "classicos",  badge: null,           art: { base: "#d9a86a", chip: "#8a5a28", shape: "flake" } },
@@ -19,6 +22,42 @@ const PRODUCTS = [
 ];
 
 const CAT_LABEL = { classicos: "Clássicos", especiais: "Especiais", brasil: "Doces do Brasil", bebidas: "Bebidas" };
+
+function normalizeFirestoreProduct(item) {
+  const data = item.data();
+  return {
+    id: item.id,
+    name: String(data.nome || "Produto"),
+    desc: String(data.descricao || ""),
+    price: Number(data.preco || 0),
+    cat: data.categoria || "classicos",
+    badge: data.selo || null,
+    imagem: typeof data.imagem === "string" ? data.imagem : "",
+    art: { base: "#c9803e", chip: "#4a2c17", shape: "circle" }
+  };
+}
+
+function escapeAttribute(value) {
+  return String(value).replaceAll("&", "&amp;").replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
+function listenToCatalog() {
+  onSnapshot(collection(db, "produtos"), (snapshot) => {
+    if (snapshot.empty) return;
+    PRODUCTS = snapshot.docs.map(normalizeFirestoreProduct)
+      .filter((product) => product.price > 0 && snapshot.docs.find((item) => item.id === product.id).data().ativo !== false);
+    state.cart = new Map([...state.cart].filter(([id]) => PRODUCTS.some((product) => product.id === id)));
+    saveCart();
+    renderMenu();
+    renderBar();
+    if (!cartSheet.hidden) renderCart();
+  }, (error) => {
+    console.error("Não foi possível sincronizar o cardápio:", error);
+    showToast("Não foi possível atualizar o cardápio.");
+  });
+}
+
 
 /* ---------- Estado ---------- */
 const state = {
@@ -104,7 +143,7 @@ function renderMenu() {
     <article class="card">
       <div class="card-art">
         ${p.badge ? `<span class="card-badge">${p.badge}</span>` : ""}
-        ${cookieSVG(p.art)}
+        ${p.imagem ? `<img src="${escapeAttribute(p.imagem)}" alt="${escapeAttribute(p.name)}" loading="lazy" style="width:108px;height:108px;object-fit:cover;border-radius:14px">` : cookieSVG(p.art)}
       </div>
       <div class="card-body">
         <h3>${p.name}</h3>
@@ -431,5 +470,6 @@ if ("serviceWorker" in navigator) {
 
 /* ---------- Inicialização ---------- */
 loadCart();
+listenToCatalog();
 renderMenu();
 renderBar();
