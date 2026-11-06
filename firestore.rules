@@ -1,0 +1,55 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/administradores/$(request.auth.uid))
+        && get(/databases/$(database)/documents/administradores/$(request.auth.uid)).data.ativo == true;
+    }
+
+    match /administradores/{uid} {
+      allow get: if request.auth != null && request.auth.uid == uid;
+      allow list, create, update, delete: if false;
+    }
+
+    match /produtos/{produtoId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /pedidos/{pedidoId} {
+      allow create: if
+        request.resource.data.keys().hasAll([
+          'codigo', 'nome', 'modo', 'pagamento', 'total', 'itens',
+          'status', 'criado_em'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'codigo', 'nome', 'modo', 'pagamento', 'total', 'itens',
+          'status', 'criado_em'
+        ])
+        && request.resource.data.codigo is string
+        && request.resource.data.codigo.size() <= 20
+        && request.resource.data.nome is string
+        && request.resource.data.nome.size() <= 24
+        && request.resource.data.modo in ['retirada', 'salao']
+        && request.resource.data.pagamento in ['Dinheiro', 'Cartão', 'Pix']
+        && request.resource.data.total is number
+        && request.resource.data.total > 0
+        && request.resource.data.itens is list
+        && request.resource.data.itens.size() > 0
+        && request.resource.data.itens.size() <= 30
+        && request.resource.data.status == 'recebido'
+        && request.resource.data.criado_em == request.time;
+
+      allow get, list: if isAdmin();
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['status']);
+      allow delete: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
